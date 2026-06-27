@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+
+   /* brand theme accent theme */
+  --color-brand-red: #ef4444;
+  --color-brand-red-hover: #dc2626;
+  --color-brand-emerald: #10b981;
+  --color-brand-indigo: #6366f1;
+  --color-brand-amber: #f59e0b;
+
+  /* console base colors */
+  --color-panel-bg: #0d0e12;
+  --color-card-bg: #15171e;
+  --color-card-border: #222530;
+  --color-card-hover-border: #3b3f52;
+
+}
+
+  /* base body styles */
+  body {
+   background-color:var(--color-panel-bg);
+   color: #f3f4f6;
+  }
+
+
+
+  ::-webkit-scrollbar{
+   width: 6px;
+   height:6px;
+  }
+
+  ::-webkit-scrollbar-thumb{
+   background: #2a2e3d;
+   border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+  background: #3f4459;
+   }
+
+  ::-webkit-scrollbar-track {
+  background: transparent;
+   }
+
+
+  /* smooth scrolling */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* smooth pulse animation for processing/streaming states */
+@keyframes pulse-grow{
+   0%,100%{
+      opacity: 1;
+      filter:drop-shadow(0 0 2px rgba(239,68,68,0.4));
+   }
+
+   50%{
+      opacity: 0.6;
+      filter:drop-shadow(0 0 8px rgba(239,68,68,0.8));
+   }
+}
+
+.animate-pulse-grow{
+   animation: pulse-grow 2s infinite ease-in-out;
+}
+   
