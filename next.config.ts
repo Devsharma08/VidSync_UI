@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import crypto from "crypto";
+
+const BACKEND_URL = 'https://vidsync.docs.devsharma.dev';
 
 const nextConfig: NextConfig = {
   // PERFORMANCE & COMPILATION SPEED
@@ -29,9 +32,20 @@ const nextConfig: NextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:;"
+            value: `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https: *; connect-src 'self' ${BACKEND_URL} ws: wss:;`
           }
         ],
+      },
+    ];
+  },
+
+  // API PROXY REWRITES — forwards /api/* from the Next.js dev server to the deployed backend,
+  // which eliminates cross-origin browser CORS restrictions entirely.
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${BACKEND_URL}/api/:path*`,
       },
     ];
   },
@@ -57,10 +71,10 @@ const nextConfig: NextConfig = {
           },
           // Splits large third-party libraries out of your main layout bundles
           lib: {
-            test(module) {
+            test(module: any) {
               return module.size() > 50000 && /node_modules/.test(module.identifier());
             },
-            name(module) {
+            name(module: any) {
               const hash = crypto.createHash('sha1');
               hash.update(module.identifier());
               return `lib-${hash.digest('hex').slice(0, 8)}`;
@@ -74,6 +88,7 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
+  turbopack: {},
 };
 
-module.exports = nextConfig;
+export default nextConfig;
