@@ -6,6 +6,9 @@ export interface VideoDetails {
    channelTitle: string;
    channelId?: string;
    publishedAt?: string;
+   viewCount?: string | number;
+   likeCount?: string | number;
+   commentCount?: string | number;
    isLiveStream: {
       actualStartTime?: string;
       actualLiveChatId?: string;

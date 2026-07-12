@@ -453,25 +453,37 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-transparent text-gray-100 flex flex-col font-sans dashboard-vignette relative">
       {/* Outer Layout Grid */}
-      <div className="flex-grow p-4 md:p-6 max-w-7xl mx-auto w-full flex flex-col">
-        {/* Navigation / Header replacement */}
+      <div className="flex-grow p-4 md:p-6 max-w-[1600px] mx-auto w-full flex flex-col">
+        {/* Navigation / Header */}
         <div className="flex items-center justify-between border-b border-card-border/40 pb-4 mb-6">
-          <button
-            onClick={() => setView("home")}
-            className="flex items-center gap-1.5 text-xs text-gray-300 hover:text-white transition-colors cursor-pointer border border-card-border/80 bg-black/45 hover:bg-black/75 px-3 py-2 rounded-xl"
-          >
-            <span>←</span> Back to Hub
-          </button>
-          
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-brand-emerald status-ping" />
-            <span className="text-[11px] font-mono text-gray-400">Queue Node Online</span>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setView("home")}
+              className="flex items-center gap-1.5 text-xs text-gray-300 hover:text-white transition-colors cursor-pointer border border-card-border/80 bg-black/45 hover:bg-black/75 px-3 py-2 rounded-xl"
+            >
+              <span>←</span> Hub
+            </button>
+            <div className="hidden md:flex items-center gap-2">
+              <span className="text-lg font-black tracking-tighter animate-text-sheen select-none">VidSync</span>
+              <span className="text-[10px] text-gray-500 font-mono uppercase tracking-widest border border-card-border/60 px-2 py-0.5 rounded-md">Intel Terminal v1.2</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-1.5 text-[10px] font-mono text-gray-500">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-emerald status-ping" />
+              BullMQ Worker
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-brand-emerald status-ping" />
+              <span className="text-[11px] font-mono text-gray-400">Queue Node Online</span>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0" style={{ maxHeight: 'calc(100vh - 100px)' }}>
-          {/* Left Hand side inputs and logs — scrollable internally */}
-          <div className="lg:col-span-1 space-y-6 overflow-y-auto pr-1" style={{ maxHeight: 'calc(100vh - 100px)' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1 min-h-0" style={{ maxHeight: 'calc(100vh - 110px)' }}>
+          {/* Left sidebar — scrollable internally */}
+          <div className="lg:col-span-1 space-y-6 overflow-y-auto pr-1" style={{ maxHeight: 'calc(100vh - 110px)' }}>
             <VideoInput onAction={handleAction} isLoading={isLoading} />
             
             {isLoading && (
@@ -489,8 +501,8 @@ export default function Home() {
 
           </div>
 
-          {/* Right Hand side details display workspace */}
-          <div className="lg:col-span-2 space-y-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 100px)' }}>
+          {/* Right workspace — 3 cols wide, scrollable */}
+          <div className="lg:col-span-3 space-y-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 110px)' }}>
             {!hasData && !isLoading && (
               <div className="bg-card-bg border border-card-border rounded-3xl p-8 shadow-2xl flex flex-col space-y-6 animate-fade-up-hero">
                 <div className="flex items-center gap-3 border-b border-card-border/60 pb-4">

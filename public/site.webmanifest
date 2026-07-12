@@ -1,0 +1,18 @@
+{
+  "name": "VidSync — AI Stream Intel Terminal",
+  "short_name": "VidSync",
+  "description": "Advanced AI-powered multimodal YouTube stream ingest terminal. Parse transcripts, run RAG Q&A, score sentiment, and compile analytical summaries.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0D11",
+  "theme_color": "#0B0D11",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

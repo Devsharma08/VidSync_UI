@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VidSync — AI Stream Intel Terminal (Frontend)
+
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed-Vercel-black?logo=vercel)](https://vid-sync-ui.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org)
+
+A cinematic, dark-mode intelligence dashboard for VidSync — an AI-powered multimodal YouTube stream analysis platform. The UI streams real-time pipeline progress, renders timeline analytics, drives local RAG Q&A conversations, and displays audience sentiment scoring — all via Server-Sent Events from the deployed backend.
+
+---
+
+## Live Demo
+
+| Environment | URL |
+|---|---|
+| Production | [https://vidsync.devsharma.dev](https://vidsync.devsharma.dev) |
+| Vercel Mirror | [https://vid-sync-ui.vercel.app](https://vid-sync-ui.vercel.app) |
+
+---
+
+## Features
+
+- **Full Pipeline Ingest** — Run background BullMQ jobs for transcript parsing, chat extraction, vector embedding, AI summarization, and sentiment scoring from a single URL input
+- **Streaming AI Summary** — On-demand SSE-streamed Ollama summaries in Detailed / Normal / Short modes with live character count
+- **Semantic RAG Q&A** — Ask natural language questions about any ingested video timeline block
+- **Sentiment Dashboard** — Audience comment tone analysis (positive / neutral / negative %) powered by Grok API
+- **Chapter Analytics** — Concept shift detection and keyword tagging across timeline segments
+- **Cinematic UI** — Bento-box landing, scanline overlay, flowing border shimmer, animated vignette, status-ping indicators
+- **Centered Loading Modal** — Full-screen overlay with animated SVG progress ring and live task messages
+- **SEO Optimized** — Full Open Graph, Twitter Card, web app manifest, and favicon
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router, Turbopack) |
+| Language | TypeScript 5 |
+| Styling | Vanilla CSS + custom design tokens |
+| Data Streaming | Server-Sent Events (SSE) via custom `streamPostSSE` |
+| Package Manager | pnpm |
+| Deployment | Vercel |
+
+---
+
+## Project Structure
+
+```
+VidSync_UI/
+├── app/
+│   ├── components/
+│   │   ├── AnalysisProgress.tsx   # Fullscreen centered loading overlay
+│   │   ├── AnalyticsDashboard.tsx # Chapter + keyword analytics panel
+│   │   ├── ChatRag.tsx            # RAG Q&A streaming chat interface
+│   │   ├── StreamMetadata.tsx     # Video metadata + thumbnail panel
+│   │   └── VideoInput.tsx         # URL input + pipeline options
+│   ├── utils/
+│   │   └── video-api.ts           # VideoDetails types + streamPostSSE
+│   ├── globals.css                # Design tokens, animations, bento styles
+│   ├── layout.tsx                 # Root layout + full SEO metadata
+│   └── page.tsx                   # Main dashboard page
+├── public/
+│   ├── icon.png                   # App icon / favicon
+│   ├── apple-touch-icon.png       # iOS home screen icon
+│   └── site.webmanifest           # PWA manifest
+└── next.config.ts
+```
+
+---
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Install dependencies
+pnpm install
+
+# Start development server
+pnpm run dev
+
+# Build for production
+pnpm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> The app connects to the deployed backend at `https://vidsync.docs.devsharma.dev`. No local backend is required to run the UI.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment
 
-## Learn More
+Deployed on **Vercel** via automatic GitHub pushes to `main`. No extra build config needed.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+git push origin main
+```
