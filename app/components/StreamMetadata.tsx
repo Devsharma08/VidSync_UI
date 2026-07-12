@@ -6,6 +6,21 @@ interface StreamMetadataProps {
   videoDetails: VideoDetails;
 }
 
+// Strip HTML tags and decode common HTML entities from raw YouTube text
+function stripHtml(html: string): string {
+  if (!html) return "";
+  return html
+    .replace(/<[^>]*>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export default function StreamMetadata({ videoDetails }: StreamMetadataProps) {
   // Format the ISO publish date to a clean, readable local format
   const formatPublishDate = (dateStr?: string) => {
@@ -26,6 +41,7 @@ export default function StreamMetadata({ videoDetails }: StreamMetadataProps) {
   const isLive = !!videoDetails.isLiveStream;
   const videoId = videoDetails.id;
   const maxResUrl = videoId ? `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg` : "";
+  const cleanDescription = stripHtml(videoDetails.description || "");
 
   return (
     <div className="bg-gradient-to-br from-card-bg to-panel-bg border border-card-border/80 hover:border-brand-indigo/30 rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-brand-indigo/5">
@@ -85,10 +101,10 @@ export default function StreamMetadata({ videoDetails }: StreamMetadataProps) {
             </p>
           </div>
 
-          {/* Description Snippet (Collapsible styled console box) */}
-          <div className="bg-black/30 border border-card-border/60 rounded-xl p-4 max-h-32 overflow-y-auto text-xs text-gray-400 font-mono leading-relaxed custom-scrollbar">
+          {/* Description Snippet — HTML stripped */}
+          <div className="bg-black/30 border border-card-border/60 rounded-xl p-4 max-h-32 overflow-y-auto text-xs text-gray-400 font-mono leading-relaxed">
             <span className="text-gray-500 uppercase tracking-widest block mb-1 text-[9px] font-semibold">Snippet log:</span>
-            {videoDetails.description || "No video description available."}
+            {cleanDescription || "No video description available."}
           </div>
         </div>
       </div>

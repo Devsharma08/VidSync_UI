@@ -6,50 +6,78 @@ interface AnalysisProgressProps {
 }
 
 export default function AnalysisProgress({ statusMessage, percentage }: AnalysisProgressProps) {
-  // Determine if we are actively processing
   const isActive = statusMessage && statusMessage !== "Analysis completed!";
 
   return (
-    <div className="bg-card-bg border border-card-border rounded-xl p-6 shadow-xl space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {/* Glowing pulse indicator using our CSS animation */}
-          {isActive ? (
-            <div className="w-3 h-3 rounded-full bg-brand-red animate-pulse-grow" />
-          ) : (
-            <div className="w-3 h-3 rounded-full bg-brand-emerald" />
-          )}
-          <span className="text-sm font-medium tracking-wide text-gray-200">
-            {isActive ? "Pipeline Execution Active" : "Pipeline Idle"}
-          </span>
-        </div>
-        <span className="text-xs font-mono text-gray-400 bg-panel-bg px-2.5 py-1 rounded-md border border-card-border">
-          {percentage}% Complete
-        </span>
-      </div>
+    <div className="fixed inset-0 z-[999] flex items-center justify-center" style={{ backdropFilter: 'blur(6px)', background: 'rgba(8,9,12,0.75)' }}>
+      {/* Ambient glow blobs */}
+      <div className="absolute w-[420px] h-[420px] rounded-full bg-brand-indigo/10 blur-[100px] pointer-events-none animate-pulse-slow-glow" />
+      <div className="absolute w-[300px] h-[300px] rounded-full bg-brand-red/8 blur-[80px] pointer-events-none animate-pulse-slow-glow" style={{ animationDelay: '2s' }} />
 
-      {/* Progress Bar Container */}
-      <div className="w-full h-2.5 bg-panel-bg rounded-full overflow-hidden border border-card-border">
-        <div
-          className="h-full bg-gradient-to-r from-brand-indigo via-brand-red to-brand-emerald transition-all duration-500 ease-out"
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
+      {/* Modal card */}
+      <div className="relative z-10 w-full max-w-md mx-4 bg-card-bg border border-card-border/80 rounded-3xl p-8 shadow-2xl flex flex-col items-center gap-6 overflow-hidden animate-modal-in border-shimmer">
+        {/* Subtle top scanline sheen */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-indigo/50 to-transparent" />
 
-      {/* Current Step Description */}
-      <div className="flex items-start gap-3 bg-panel-bg/50 border border-card-border/60 rounded-lg p-3.5">
-        {isActive && (
-          <svg className="animate-spin h-4 w-4 text-brand-indigo mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+        {/* Ring spinner */}
+        <div className="relative flex items-center justify-center w-24 h-24">
+          {/* Outer glow ring */}
+          <div className="absolute inset-0 rounded-full border-2 border-brand-indigo/15" />
+          {/* Spinning arc */}
+          <svg className="absolute inset-0 w-full h-full animate-spin" viewBox="0 0 96 96" fill="none">
+            <circle
+              cx="48" cy="48" r="44"
+              stroke="url(#progressGrad)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeDasharray={`${2.76 * percentage} ${276 - 2.76 * percentage}`}
+              strokeDashoffset="69"
+            />
+            <defs>
+              <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#6366f1" />
+                <stop offset="50%" stopColor="#ef4444" />
+                <stop offset="100%" stopColor="#10b981" />
+              </linearGradient>
+            </defs>
           </svg>
-        )}
-        <div className="space-y-1">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Current Operations Task</p>
-          <p className="text-sm font-semibold text-gray-200">
-            {statusMessage || "Waiting to initialize stream analysis..."}
-          </p>
+          {/* Center percentage */}
+          <span className="text-2xl font-black text-white font-mono tabular-nums">{percentage}%</span>
         </div>
+
+        {/* Title */}
+        <div className="text-center space-y-1">
+          <p className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-brand-indigo">
+            {isActive ? "Pipeline Execution Active" : "Completing..."}
+          </p>
+          <h3 className="text-lg font-bold text-white leading-snug">
+            VidSync Ingest Running
+          </h3>
+        </div>
+
+        {/* Status message box */}
+        <div className="w-full bg-panel-bg border border-card-border/70 rounded-xl p-4 flex items-start gap-3">
+          <div className="space-y-0.5 min-w-0">
+            <p className="text-[10px] font-medium text-gray-500 uppercase tracking-wider">Current Task</p>
+            <p className="text-sm font-semibold text-gray-200 leading-snug">
+              {statusMessage || "Waiting to initialize stream analysis..."}
+            </p>
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="w-full h-1.5 bg-panel-bg rounded-full overflow-hidden border border-card-border/50">
+          <div
+            className="h-full rounded-full transition-all duration-500 ease-out"
+            style={{
+              width: `${percentage}%`,
+              background: 'linear-gradient(90deg, #6366f1, #ef4444, #10b981)'
+            }}
+          />
+        </div>
+
+        {/* Bottom shimmer line */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-red/40 to-transparent" />
       </div>
     </div>
   );

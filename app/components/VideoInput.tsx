@@ -2,10 +2,15 @@
 
 import { useState } from "react";
 
-export type IngestAction = "analyze" | "metadata" | "transcripts" | "chapters";
+export type IngestAction = "analyze" | "metadata" | "transcripts" | "chapters" | "summarize";
 
 interface VideoInputProps {
-  onAction: (url: string, channelLink: string, action: IngestAction) => void;
+  onAction: (
+    url: string,
+    channelLink: string,
+    action: IngestAction,
+    options?: { fetchChat: boolean; generateEmbeddings: boolean; generateSummary: boolean; analyzeSentiment: boolean }
+  ) => void;
   isLoading: boolean;
 }
 
@@ -13,6 +18,12 @@ export default function VideoInput({ onAction, isLoading }: VideoInputProps) {
   const [url, setUrl] = useState("");
   const [channelLink, setChannelLink] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  // Custom step selection states for pipeline runs
+  const [fetchChat, setFetchChat] = useState(true);
+  const [generateEmbeddings, setGenerateEmbeddings] = useState(true);
+  const [generateSummary, setGenerateSummary] = useState(true);
+  const [analyzeSentiment, setAnalyzeSentiment] = useState(true);
 
   const handleTrigger = (action: IngestAction) => {
     setError(null);
@@ -28,7 +39,12 @@ export default function VideoInput({ onAction, isLoading }: VideoInputProps) {
       return;
     }
 
-    onAction(url.trim(), channelLink.trim(), action);
+    onAction(url.trim(), channelLink.trim(), action, {
+      fetchChat,
+      generateEmbeddings,
+      generateSummary,
+      analyzeSentiment
+    });
   };
 
   return (
@@ -77,6 +93,55 @@ export default function VideoInput({ onAction, isLoading }: VideoInputProps) {
           />
         </div>
 
+        {/* Pipeline Steps Configuration Checkboxes */}
+        <div className="bg-black/25 border border-card-border/50 rounded-xl p-4 space-y-3">
+          <span className="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">
+            Pipeline Steps to Run
+          </span>
+          <div className="space-y-2">
+            <label className="flex items-center gap-2.5 text-xs text-gray-300 cursor-pointer hover:text-white select-none">
+              <input
+                type="checkbox"
+                checked={fetchChat}
+                onChange={(e) => setFetchChat(e.target.checked)}
+                disabled={isLoading}
+                className="accent-brand-red w-3.5 h-3.5 rounded border-card-border bg-black/45 cursor-pointer"
+              />
+              <span>Extract Chat Replay & Comments</span>
+            </label>
+            <label className="flex items-center gap-2.5 text-xs text-gray-300 cursor-pointer hover:text-white select-none">
+              <input
+                type="checkbox"
+                checked={generateEmbeddings}
+                onChange={(e) => setGenerateEmbeddings(e.target.checked)}
+                disabled={isLoading}
+                className="accent-brand-indigo w-3.5 h-3.5 rounded border-card-border bg-black/45 cursor-pointer"
+              />
+              <span>Generate Q&A Section</span>
+            </label>
+            <label className="flex items-center gap-2.5 text-xs text-gray-300 cursor-pointer hover:text-white select-none">
+              <input
+                type="checkbox"
+                checked={generateSummary}
+                onChange={(e) => setGenerateSummary(e.target.checked)}
+                disabled={isLoading}
+                className="accent-brand-emerald w-3.5 h-3.5 rounded border-card-border bg-black/45 cursor-pointer"
+              />
+              <span>Generate AI Summary Paragraph</span>
+            </label>
+            <label className="flex items-center gap-2.5 text-xs text-gray-300 cursor-pointer hover:text-white select-none">
+              <input
+                type="checkbox"
+                checked={analyzeSentiment}
+                onChange={(e) => setAnalyzeSentiment(e.target.checked)}
+                disabled={isLoading}
+                className="accent-brand-amber w-3.5 h-3.5 rounded border-card-border bg-black/45 cursor-pointer"
+              />
+              <span>Analyze Sentiment & Recommendations</span>
+            </label>
+          </div>
+        </div>
+
         {/* Error Feedback */}
         {error && (
           <div className="text-xs text-brand-red bg-brand-red/10 border border-brand-red/20 rounded-xl p-4 font-medium">
@@ -116,45 +181,7 @@ export default function VideoInput({ onAction, isLoading }: VideoInputProps) {
             )}
           </button>
 
-          {/* Quick Actions Label */}
-          <div className="flex items-center my-4">
-            <div className="flex-grow border-t border-card-border/50"></div>
-            <span className="flex-shrink mx-3 text-[9px] text-gray-500 uppercase tracking-widest font-bold">Or Quick Fetch Endpoints</span>
-            <div className="flex-grow border-t border-card-border/50"></div>
-          </div>
 
-          {/* Sub Grid Actions */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            {/* Action: Detail Check */}
-            <button
-              type="button"
-              onClick={() => handleTrigger("metadata")}
-              disabled={isLoading}
-              className="py-2.5 px-3 rounded-xl bg-black/35 border border-card-border/80 hover:border-brand-indigo/40 hover:bg-card-bg text-gray-300 hover:text-white transition-all text-[11px] font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
-            >
-              <span>🔍</span> Metadata
-            </button>
-
-            {/* Action: Captions Check */}
-            <button
-              type="button"
-              onClick={() => handleTrigger("transcripts")}
-              disabled={isLoading}
-              className="py-2.5 px-3 rounded-xl bg-black/35 border border-card-border/80 hover:border-brand-emerald/40 hover:bg-card-bg text-gray-300 hover:text-white transition-all text-[11px] font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
-            >
-              <span>📄</span> Captions
-            </button>
-
-            {/* Action: Chapters/Tags Check */}
-            <button
-              type="button"
-              onClick={() => handleTrigger("chapters")}
-              disabled={isLoading}
-              className="py-2.5 px-3 rounded-xl bg-black/35 border border-card-border/80 hover:border-brand-amber/40 hover:bg-card-bg text-gray-300 hover:text-white transition-all text-[11px] font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
-            >
-              <span>🏷️</span> Analytics
-            </button>
-          </div>
         </div>
       </div>
     </div>
